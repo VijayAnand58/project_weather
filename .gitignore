@@ -1,1 +1,6 @@
 _pycache_
+/weather_forecast/_pycache_
+/weather_forecast/
+/weather_forecast/.dockerignore
+/weather_forecast/Dockerfile
+/weather_forecast/docker-compose.yaml
