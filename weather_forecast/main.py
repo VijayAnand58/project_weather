@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
+
 # import os
 
 from ml_project_linear_temp import variance,weather_ml_report,prediction,linear_temp_user_predict,linear_temp_user_predict_year
@@ -75,13 +77,19 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# Add CORS middleware
+origins = [
+    "http://localhost:5173",  # Add your frontend URL here
+    "https://temp-predictor-one.vercel.app/",  # Add your production URL here
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 @app.get("/data/temp/linear")
 async def get_liner_temp_data():
