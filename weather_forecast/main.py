@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
+
 # import os
 
 from ml_project_linear_temp import variance,weather_ml_report,prediction,linear_temp_user_predict,linear_temp_user_predict_year
