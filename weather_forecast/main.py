@@ -78,15 +78,14 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Add CORS middleware
-origins = [
-    "http://localhost:5173",  # Add your frontend URL here
-    "https://temp-predictor-one.vercel.app/",  # Add your production URL here
-]
+# origins = [
+#     "http://localhost:5173",  # Add your frontend URL here
+#     "https://temp-predictor-one.vercel.app/",  # Add your production URL here
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
