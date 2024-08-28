@@ -74,6 +74,20 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+# Add CORS middleware
+origins = [
+    "http://localhost:5173",  # Add your frontend URL here
+    "https://temp-predictor-one.vercel.app/",  # Add your production URL here
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/data/temp/linear")
 async def get_liner_temp_data():
    return instance.linear_temp()
