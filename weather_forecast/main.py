@@ -1,13 +1,16 @@
 import json
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
+import numpy as np
+from sklearn.metrics import r2_score
+
 
 # import os
 
-from ml_project_linear_temp import variance,weather_ml_report,prediction,linear_temp_user_predict,linear_temp_user_predict_year
-from ml_project_linear_precipitation import variance_precip,weather_ml_report_precip,prediction_precip,linear_precip_user_predict,linear_precip_user_predict_year
-from ml_project_rf_temp import variance_rf, weather_ml_report_rf,prediction_rf,rf_temp_user_predict,rf_temp_user_predict_year
-from ml_project_rf_precipitation import variance_rf_precip,weather_ml_report_rf_precip,prediction_rf_precip,rf_precip_user_predict,rf_precip_user_predict_year
+from ml_project_linear_temp import variance,weather_ml_report,prediction_today,linear_temp_user_predict,linear_temp_user_predict_year,prediction,weather_test_temp
+from ml_project_linear_precipitation import variance_precip,weather_ml_report_precip,prediction_precip_today,linear_precip_user_predict,linear_precip_user_predict_year,prediction_precip,weather_test_precipitation
+from ml_project_rf_temp import variance_rf, weather_ml_report_rf,prediction_rf_today,rf_temp_user_predict,rf_temp_user_predict_year,prediction_rf
+from ml_project_rf_precipitation import variance_rf_precip,weather_ml_report_rf_precip,prediction_rf_precip_today,rf_precip_user_predict,rf_precip_user_predict_year,prediction_rf_precip
 
 def json_converter(dataframe):
     dataframe_json=dataframe.to_json(orient="table")
@@ -15,17 +18,23 @@ def json_converter(dataframe):
     dataframe_json_data=json.loads(json.dumps(dataframe_json_object['data']))
     return dataframe_json_data
 
+def performance_score(prediction_array,test_value):
+   mean_absolute_error=round(np.mean(np.absolute(prediction_array - test_value)),3)
+#    residual_sum_of_squares=round(np.mean((prediction_array - test_value) ** 2),3)
+   r2_score_value=round(r2_score(test_value,prediction_array ),3)
+   return{"mean_absolute_error":mean_absolute_error,"r2_score":r2_score_value}
 
 class api_transform:
     def linear_temp(self):
         data={
         "temperature_linear":{
             'variance':variance,
+            'Performace_measures': performance_score(prediction,weather_test_temp),
             # 'test_date':weather_ml_report['Date'].tolist(),
             # 'test_actual':weather_ml_report['Actual'].tolist(),
             # 'test_prediction':weather_ml_report['Prediction'].tolist(),
             # 'test_diff':weather_ml_report['diff'].tolist(),
-            'prediction':prediction[0],
+            'prediction':prediction_today[0],
             'weather_model':json_converter(weather_ml_report)
             
         }
@@ -34,11 +43,12 @@ class api_transform:
     def linear_precip(self):
         data={
             'variance':variance_precip,
+            'Performance_measures': performance_score(prediction_precip,weather_test_precipitation),
             # 'test_date':weather_ml_report_precip['Date'].tolist(),
             # 'test_actual':weather_ml_report_precip['Actual'].tolist(),
             # 'test_prediction':weather_ml_report_precip['Prediction'].tolist(),
             # 'test_diff':weather_ml_report_precip['diff'].tolist(),
-            'prediction':prediction_precip[0],
+            'prediction':prediction_precip_today[0],
             'weather_model':json_converter(weather_ml_report_precip)            
             }
         return data
@@ -46,11 +56,12 @@ class api_transform:
         data={
             'temperature_rf':{
             'variance':variance_rf,
+            'Performance_measures': performance_score(prediction_rf,weather_test_temp),
             # 'test_date':weather_ml_report_rf['Date'].tolist(),
             # 'test_actual':weather_ml_report_rf['Actual'].tolist(),
             # 'test_prediction':weather_ml_report_rf['Prediction'].tolist(),
             # 'test_diff':weather_ml_report_rf['diff'].tolist(),
-            'prediction':prediction_rf[0],
+            'prediction':prediction_rf_today[0],
             'weather_model':json_converter(weather_ml_report_rf)
         }
         }
@@ -59,11 +70,12 @@ class api_transform:
         data={
             'precipitation_rf':{
             'variance':variance_rf_precip,
+            'Performance_measures': performance_score(prediction_rf_precip,weather_test_precipitation),
             # 'test_date':weather_ml_report_rf_precip['Date'].tolist(),
             # 'test_actual':weather_ml_report_rf_precip['Actual'].tolist(),
             # 'test_prediction':weather_ml_report_rf_precip['Prediction'].tolist(),
             # 'test_diff':weather_ml_report_rf_precip['diff'].tolist(),
-            'prediction':prediction_rf_precip[0],
+            'prediction':prediction_rf_precip_today[0],
             'weather_model':json_converter(weather_ml_report_rf_precip)
         }
         }

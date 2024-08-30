@@ -52,7 +52,7 @@ model.fit(weather_train,weather_train_temp)
 
 prediction=model.predict(weather_test)
 
-np.mean(np.absolute(prediction-weather_test_temp))
+# np.mean(np.absolute(prediction-weather_test_temp))
 
 variance=round(model.score(weather_test, weather_test_temp),4)
 # print('Variance score:',variance)
@@ -75,7 +75,7 @@ avg_wind_speed_train=weather_train["wind_speed_10m_max (km/h)"].mean()
 avg_wind_direction_train=weather_train["wind_direction_10m_dominant"].mean()
 avg_evaporation_train=weather_train["et0_fao_evapotranspiration (mm)"].mean()
 future_prediction = np.array([[future_date.toordinal(),avg_precipitation_sum_train,avg_precipitation_hours_train,avg_wind_speed_train,avg_wind_direction_train,avg_evaporation_train]])
-prediction=model.predict(future_prediction)
+prediction_today=model.predict(future_prediction)
 # print(prediction)
 # print(future_date.toordinal())
 

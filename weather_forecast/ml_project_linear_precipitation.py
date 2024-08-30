@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import r2_score
 from sklearn.linear_model import LinearRegression
 from sklearn import preprocessing
 
@@ -37,19 +38,26 @@ weather_train=weather_df[["date_ordinal","temperature_2m_max","temperature_2m_mi
 weather_test_precipitation=weather_df_test.pop("precipitation_sum (mm)")
 weather_test=weather_df_test[["date_ordinal","temperature_2m_max","temperature_2m_min","precipitation_hours (h)","wind_speed_10m_max (km/h)","wind_direction_10m_dominant","et0_fao_evapotranspiration (mm)"]]
 
+def zero_conv(j:float):
+   if(j<0):
+      return 0
+   else:
+      return j
+
 model=LinearRegression()
 model.fit(weather_train,weather_train_precipitation)
 
-prediction=model.predict(weather_test)
+prediction_precip=model.predict(weather_test)
 
-np.mean(np.absolute(prediction-weather_test_precipitation))
+# np.mean(np.absolute(prediction-weather_test_precipitation))
 
 variance_precip=round(model.score(weather_test, weather_test_precipitation),4)
 # print('Variance score:',variance_precip)
 
-for i in range(len(prediction)):
-  prediction[i]=round(prediction[i],2)
-weather_ml_report_precip=pd.DataFrame({'Date':dates_string_test,'Actual':weather_test_precipitation,'Prediction':prediction,'diff':(weather_test_precipitation-prediction)})
+for i in range(len(prediction_precip)):
+  prediction_precip[i]=round(prediction_precip[i],2)
+  prediction_precip[i]=zero_conv(prediction_precip[i])
+weather_ml_report_precip=pd.DataFrame({'Date':dates_string_test,'Actual':weather_test_precipitation,'Prediction':prediction_precip,'diff':(weather_test_precipitation-prediction_precip)})
 # print(weather_ml_report_precip)
 
 future_date_precip=datetime.strptime(datetime.today().strftime('%d-%m-%Y'),'%d-%m-%Y')
@@ -60,13 +68,13 @@ avg_wind_speed_train=weather_train["wind_speed_10m_max (km/h)"].mean()
 avg_wind_direction_train=weather_train["wind_direction_10m_dominant"].mean()
 avg_evaporation_train=weather_train["et0_fao_evapotranspiration (mm)"].mean()
 future_prediction = np.array([[future_date_precip.toordinal(),avg_max_temp_train,avg_min_temp_train,avg_precipitation_hours_train,avg_wind_speed_train,avg_wind_direction_train,avg_evaporation_train]])
-prediction_precip=model.predict(future_prediction)
+prediction_precip_today=zero_conv(model.predict(future_prediction))
 # print(prediction_precip)
 
 def linear_precip_user_predict(ord_date):
   future_user_predict=np.array([[ord_date,avg_max_temp_train,avg_min_temp_train,avg_precipitation_hours_train,avg_wind_speed_train,avg_wind_direction_train,avg_evaporation_train]])
   prediction_precip_user=model.predict(future_user_predict)
-  return prediction_precip_user[0]
+  return zero_conv(prediction_precip_user[0])
 
 
 def linear_precip_user_predict_year(year):
@@ -96,6 +104,10 @@ def linear_precip_user_predict_year(year):
   weatherdf_precip_use_linear.insert(loc=0, column='date_ordinal', value=dates_ordinal_list)
   
   prediction_precip_user_year=model.predict(weatherdf_precip_use_linear)
+  for i in range(len(prediction_precip_user_year)):
+    prediction_precip_user_year[i]=round(prediction_precip_user_year[i],2)
+    prediction_precip_user_year[i]=zero_conv(prediction_precip_user_year[i])
+  
   weather_ml_report_user_year=pd.DataFrame({'Date':dates_string,'predicted_value':prediction_precip_user_year})
   return weather_ml_report_user_year
 

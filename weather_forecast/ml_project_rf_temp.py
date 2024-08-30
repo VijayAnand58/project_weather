@@ -5,7 +5,7 @@ regr=RandomForestRegressor(random_state=42)
 regr.fit(weather_train,weather_train_temp)
 
 prediction_rf=regr.predict(weather_test)
-diff_mean=np.mean(np.absolute(prediction_rf-weather_test_temp))
+# diff_mean=np.mean(np.absolute(prediction_rf-weather_test_temp))
 # print(diff_mean)
 
 variance_rf=round(regr.score(weather_test, weather_test_temp),4)
@@ -17,7 +17,7 @@ weather_ml_report_rf=pd.DataFrame({'Date':dates_string_test,'Actual':weather_tes
 # print(weather_ml_report_rf)
 
 future_prediction = np.array([[future_date.toordinal(),avg_precipitation_sum_train,avg_precipitation_hours_train,avg_wind_speed_train,avg_wind_direction_train,avg_evaporation_train]])
-prediction_rf=regr.predict(future_prediction)
+prediction_rf_today=regr.predict(future_prediction)
 # print(prediction_rf)
 
 
