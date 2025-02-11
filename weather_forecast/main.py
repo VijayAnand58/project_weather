@@ -30,10 +30,7 @@ class api_transform:
         "temperature_linear":{
             'variance':variance,
             'Performace_measures': performance_score(prediction,weather_test_temp),
-            # 'test_date':weather_ml_report['Date'].tolist(),
-            # 'test_actual':weather_ml_report['Actual'].tolist(),
-            # 'test_prediction':weather_ml_report['Prediction'].tolist(),
-            # 'test_diff':weather_ml_report['diff'].tolist(),
+    
             'prediction':prediction_today[0],
             'weather_model':json_converter(weather_ml_report)
             
@@ -44,10 +41,7 @@ class api_transform:
         data={
             'variance':variance_precip,
             'Performance_measures': performance_score(prediction_precip,weather_test_precipitation),
-            # 'test_date':weather_ml_report_precip['Date'].tolist(),
-            # 'test_actual':weather_ml_report_precip['Actual'].tolist(),
-            # 'test_prediction':weather_ml_report_precip['Prediction'].tolist(),
-            # 'test_diff':weather_ml_report_precip['diff'].tolist(),
+            
             'prediction':prediction_precip_today[0],
             'weather_model':json_converter(weather_ml_report_precip)            
             }
@@ -57,10 +51,7 @@ class api_transform:
             'temperature_rf':{
             'variance':variance_rf,
             'Performance_measures': performance_score(prediction_rf,weather_test_temp),
-            # 'test_date':weather_ml_report_rf['Date'].tolist(),
-            # 'test_actual':weather_ml_report_rf['Actual'].tolist(),
-            # 'test_prediction':weather_ml_report_rf['Prediction'].tolist(),
-            # 'test_diff':weather_ml_report_rf['diff'].tolist(),
+            
             'prediction':prediction_rf_today[0],
             'weather_model':json_converter(weather_ml_report_rf)
         }
@@ -71,10 +62,7 @@ class api_transform:
             'precipitation_rf':{
             'variance':variance_rf_precip,
             'Performance_measures': performance_score(prediction_rf_precip,weather_test_precipitation),
-            # 'test_date':weather_ml_report_rf_precip['Date'].tolist(),
-            # 'test_actual':weather_ml_report_rf_precip['Actual'].tolist(),
-            # 'test_prediction':weather_ml_report_rf_precip['Prediction'].tolist(),
-            # 'test_diff':weather_ml_report_rf_precip['diff'].tolist(),
+            
             'prediction':prediction_rf_precip_today[0],
             'weather_model':json_converter(weather_ml_report_rf_precip)
         }

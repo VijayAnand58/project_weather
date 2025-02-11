@@ -1,24 +1,22 @@
 from ml_project_linear_temp import *
 
-from sklearn.ensemble import RandomForestRegressor
-regr=RandomForestRegressor(random_state=42)
-regr.fit(weather_train,weather_train_temp)
+import joblib
 
+regr=joblib.load("randomtemp.pkl")
 prediction_rf=regr.predict(weather_test)
-# diff_mean=np.mean(np.absolute(prediction_rf-weather_test_temp))
-# print(diff_mean)
+
 
 variance_rf=round(regr.score(weather_test, weather_test_temp),4)
-# print('Variance score:',variance_rf)
 
 for i in range(len(prediction_rf)):
   prediction_rf[i]=round(prediction_rf[i],2)
 weather_ml_report_rf=pd.DataFrame({'Date':dates_string_test,'Actual':weather_test_temp,'Prediction':prediction_rf,'diff':(weather_test_temp-prediction_rf)})
-# print(weather_ml_report_rf)
+
 
 future_prediction = np.array([[future_date.toordinal(),avg_precipitation_sum_train,avg_precipitation_hours_train,avg_wind_speed_train,avg_wind_direction_train,avg_evaporation_train]])
+
 prediction_rf_today=regr.predict(future_prediction)
-# print(prediction_rf)
+
 
 
 def rf_temp_user_predict(ord_date):
@@ -53,5 +51,3 @@ def rf_temp_user_predict_year(year):
   prediction_temp_rf_user_year=regr.predict(weatherdf_temp_use_rf)
   weather_ml_report_user_year=pd.DataFrame({'Date':dates_string,'predicted_value':prediction_temp_rf_user_year})
   return weather_ml_report_user_year
-
-# print(rf_temp_user_predict_year(2024))

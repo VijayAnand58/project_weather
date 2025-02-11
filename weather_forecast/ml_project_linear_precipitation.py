@@ -3,18 +3,14 @@ warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
-import sklearn
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import r2_score
 from sklearn.linear_model import LinearRegression
-from sklearn import preprocessing
 
 from datetime import datetime
 import os
 from dataframe_compilation import weatherdf_precip_use
+
+import joblib
 
 file_path=r'chennai.csv'
 weather_df = pd.read_csv(os.path.abspath(file_path),parse_dates=['time'])
@@ -33,7 +29,6 @@ weather_df_test['date_ordinal'] = weather_df_test['time'].apply(lambda x: x.toor
 weather_train_precipitation=weather_df.pop("precipitation_sum (mm)")
 weather_train=weather_df[["date_ordinal","temperature_2m_max","temperature_2m_min","precipitation_hours (h)","wind_speed_10m_max (km/h)","wind_direction_10m_dominant","et0_fao_evapotranspiration (mm)"]]
 
-# print(weather_train_precipitation)
 
 weather_test_precipitation=weather_df_test.pop("precipitation_sum (mm)")
 weather_test=weather_df_test[["date_ordinal","temperature_2m_max","temperature_2m_min","precipitation_hours (h)","wind_speed_10m_max (km/h)","wind_direction_10m_dominant","et0_fao_evapotranspiration (mm)"]]
@@ -44,15 +39,10 @@ def zero_conv(j:float):
    else:
       return j
 
-model=LinearRegression()
-model.fit(weather_train,weather_train_precipitation)
-
+model=joblib.load("linearprecip.pkl")
 prediction_precip=model.predict(weather_test)
 
-# np.mean(np.absolute(prediction-weather_test_precipitation))
-
 variance_precip=round(model.score(weather_test, weather_test_precipitation),4)
-# print('Variance score:',variance_precip)
 
 for i in range(len(prediction_precip)):
   prediction_precip[i]=round(prediction_precip[i],2)
